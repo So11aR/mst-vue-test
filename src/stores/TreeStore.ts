@@ -27,7 +27,7 @@ export class TreeStore {
   }
 
   getAll(): Item[] {
-    return [...this.items];
+    return this.items;
   }
 
   getItem(id: string | number): Item | undefined {
@@ -35,37 +35,30 @@ export class TreeStore {
   }
 
   getChildren(id: string | number): Item[] {
-    const children = this.childrenMap.get(id);
-    return children ? [...children] : [];
-  }
-
-  getAllChildren(id: string | number): Item[] {
-    const result: Item[] = [];
-    this.collectChildren(id, result);
-    return result;
+    return this.childrenMap.get(id) ?? [];
   }
 
   hasChildren(id: string | number): boolean {
     const children = this.childrenMap.get(id);
     return !!children && children.length > 0;
   }
-  
-  getPath(id: string | number): Item[] {
-    return this.getAllParents(id).reverse();
-  }
-  
-  getDataPath(id: string | number): string[] {
-    return this.getPath(id).map((item) => String(item.id));
-  }
 
-  private collectChildren(id: string | number, acc: Item[]): void {
-    const children = this.childrenMap.get(id);
-    if (!children) return;
+  getAllChildren(id: string | number): Item[] {
+    const result: Item[] = [];
+    const stack: Array<string | number> = [id];
 
-    for (const child of children) {
-      acc.push(child);
-      this.collectChildren(child.id, acc);
+    while (stack.length) {
+      const currentId = stack.pop()!;
+      const children = this.childrenMap.get(currentId);
+      if (!children) continue;
+
+      for (const child of children) {
+        result.push(child);
+        stack.push(child.id);
+      }
     }
+
+    return result;
   }
 
   getAllParents(id: string | number): Item[] {
@@ -77,10 +70,24 @@ export class TreeStore {
       if (currentItem.parent === null) break;
       currentItem = this.itemsMap.get(currentItem.parent);
     }
+
     return result;
   }
 
+  getPath(id: string | number): Item[] {
+    return this.getAllParents(id).reverse();
+  }
+
+  getDataPath(id: string | number): string[] {
+    return this.getPath(id).map((item) => String(item.id));
+  }
+
   addItem(item: Item): void {
+    if (this.itemsMap.has(item.id)) {
+      this.updateItem(item);
+      return;
+    }
+
     this.items.push(item);
     this.itemsMap.set(item.id, item);
 

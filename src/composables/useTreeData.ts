@@ -7,11 +7,13 @@ export interface UseTreeDataOptions {
   delay?: number;
 }
 
+// Vite подставляет BASE_URL, но вне Vite-окружения (например,
+// в некоторых тест-раннерах) import.meta.env может быть undefined.
+const BASE_URL = import.meta.env?.BASE_URL ?? '/';
+
 export function useTreeData(options: UseTreeDataOptions = {}) {
-  const {
-    url = `${import.meta.env.BASE_URL}items.json`,
-    delay = 2000,
-  } = options;
+  const url = options.url ?? `${BASE_URL}items.json`;
+  const delay = options.delay ?? 2000;
 
   const treeStore = new TreeStore();
   const rowData = shallowRef<Item[]>([]);
