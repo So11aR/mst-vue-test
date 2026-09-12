@@ -10,7 +10,7 @@ export class TreeStore {
   }
 
   setItems(items: Item[]): void {
-    this.items = items;
+    this.items = [...items];
     this.itemsMap.clear();
     this.childrenMap.clear();
 
@@ -34,11 +34,11 @@ export class TreeStore {
     return this.itemsMap.get(id);
   }
 
-  getChildren(id: string | number): Item[] {
+  getChildren(id: string | number | null): Item[] {
     return this.childrenMap.get(id) ?? [];
   }
-
-  hasChildren(id: string | number): boolean {
+  
+  hasChildren(id: string | number | null): boolean {
     const children = this.childrenMap.get(id);
     return !!children && children.length > 0;
   }

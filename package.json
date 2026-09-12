@@ -9,7 +9,10 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "format": "prettier --write --experimental-cli src/"
+    "format": "prettier --write --experimental-cli src/",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "ag-grid-community": "^36.1.0",
@@ -27,6 +30,7 @@
     "typescript": "~6.0.0",
     "vite": "^8.1.5",
     "vite-plugin-vue-devtools": "^8.1.5",
+    "vitest": "^5.0.0",
     "vue-tsc": "^3.3.7"
   },
   "engines": {
