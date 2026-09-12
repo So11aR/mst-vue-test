@@ -45,6 +45,19 @@ export class TreeStore {
     return result;
   }
 
+  hasChildren(id: string | number): boolean {
+    const children = this.childrenMap.get(id);
+    return !!children && children.length > 0;
+  }
+  
+  getPath(id: string | number): Item[] {
+    return this.getAllParents(id).reverse();
+  }
+  
+  getDataPath(id: string | number): string[] {
+    return this.getPath(id).map((item) => String(item.id));
+  }
+
   private collectChildren(id: string | number, acc: Item[]): void {
     const children = this.childrenMap.get(id);
     if (!children) return;
